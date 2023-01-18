@@ -1,29 +1,25 @@
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
-from .models import Product, ProductCategory, Baskets
 from django.contrib.auth.decorators import login_required
-
 from django.views.generic.base import TemplateView
 from django.views.generic.list import ListView
 
+from .models import Product, ProductCategory, Baskets
+from common.view import TitleMixin
 
-class IndexView(TemplateView):
+
+class IndexView(TitleMixin, TemplateView):
     template_name = 'products/index.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(IndexView, self).get_context_data(**kwargs)
-        context['title'] = 'Магазин'
-        return context
+    title = 'Магазин'
 
 
-class ProductListView(ListView):
+class ProductListView(TitleMixin, ListView):
     model = Product
     template_name = 'products/products.html'
     paginate_by = 3
+    title = 'Магазин -  Каталог'
 
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(ProductListView, self).get_context_data()
-        context['title'] = 'Магазин -  Каталог'
         context['categories'] = ProductCategory.objects.all()
         return context
 

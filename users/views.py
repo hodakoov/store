@@ -1,36 +1,37 @@
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView
 from django.contrib.auth.views import LoginView
+from django.contrib.messages.views import SuccessMessageMixin
 
 from .forms import UserLoginForm, UserRegistrationForm, UserProfileForm
 from products.models import Baskets
 from users.models import User
+from common.view import TitleMixin
 
 
-class UserLoginView(LoginView):
+class UserLoginView(TitleMixin, LoginView):
     template_name = 'users/login.html'
     form_class = UserLoginForm
+    title = 'Магазин - Авторизация'
 
 
-class UserRegistrationView(CreateView):
+class UserRegistrationView(TitleMixin, SuccessMessageMixin, CreateView):
     model = User
     form_class = UserRegistrationForm
     template_name = 'users/register.html'
-
-    def get_context_data(self, **kwargs):
-        context = super(UserRegistrationView, self).get_context_data(**kwargs)
-        context['title'] = 'Магазин - Регистрация'
-        return context
+    success_url = reverse_lazy('users:login')
+    success_message = 'Вы успешно зарегистрированны!'
+    title = 'Магазин - Регистрация'
 
 
-class UserProfileView(UpdateView):
+class UserProfileView(TitleMixin, UpdateView):
     model = User
     form_class = UserProfileForm
     template_name = 'users/profile.html'
+    title = 'Магазин - Профиль'
 
     def get_context_data(self, **kwargs):
         context = super(UserProfileView, self).get_context_data(**kwargs)
-        context['title'] = 'Магазин - Профиль'
         context['baskets'] = Baskets.objects.filter(user=self.object)
         return context
 
