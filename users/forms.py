@@ -3,6 +3,7 @@ from datetime import timedelta
 
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, UserChangeForm
 from django import forms
+from django.core.exceptions import ValidationError
 from django.utils.timezone import now
 
 from .models import User, EmailVerification
@@ -22,8 +23,11 @@ class UserLoginForm(AuthenticationForm):
         model = User
         fields = ('username', 'password')
 
-    # def confirm_login_allowed(self, user):
-    # запретить авторизоваться без подтверждения емайла
+    def confirm_login_allowed(self, user):
+        if not user.is_verified_email:
+            raise ValidationError("Ваша учетная запись не активна. "
+                                  "Подтвердите учетную запись. "
+                                  "На Вашу почту отправлено сообщение для подтверждения учетной записи.",)
 
 
 class UserRegistrationForm(UserCreationForm):

@@ -22,7 +22,7 @@ class UserRegistrationView(TitleMixin, SuccessMessageMixin, CreateView):
     template_name = 'users/register.html'
     success_url = reverse_lazy('users:login')
     success_message = 'Вы успешно зарегистрированны! ' \
-                      'На Вашу почту пришло сообщение для подтверждения учетной записи.'
+                      'На Вашу почту отправлено сообщение для подтверждения учетной записи.'
     title = 'Магазин - Регистрация'
 
 
