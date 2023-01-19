@@ -22,6 +22,9 @@ class UserLoginForm(AuthenticationForm):
         model = User
         fields = ('username', 'password')
 
+    # def confirm_login_allowed(self, user):
+    # запретить авторизоваться без подтверждения емайла
+
 
 class UserRegistrationForm(UserCreationForm):
     first_name = forms.CharField(widget=forms.TextInput(attrs={
