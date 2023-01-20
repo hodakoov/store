@@ -54,7 +54,6 @@ class EmailVerificationView(TitleMixin, TemplateView):
             user.save()
             return super(EmailVerificationView, self).get(self, request, *args, **kwargs)
         else:
-
             return HttpResponseRedirect(reverse('index'))
 
 

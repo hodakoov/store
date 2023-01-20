@@ -31,12 +31,16 @@ class EmailVerification(models.Model):
         message = 'Для подтверждения учетной записи для {} перейдите по ссылке: {}'.format(
             self.user.email,
             verification_link)
+        html_message = 'Для подтверждения учетной записи для {} перейдите по <a href="{}">ссылке</a>'.format(
+            self.user.email,
+            verification_link)
         send_mail(
             subject=subject,
             message=message,
-            from_email='from@example.com',
+            from_email=settings.EMAIL_HOST_USER,
             recipient_list=[self.user.email],
             fail_silently=False,
+            html_message=html_message
         )
 
     def is_expired(self):
