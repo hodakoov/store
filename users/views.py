@@ -32,11 +32,6 @@ class UserProfileView(TitleMixin, UpdateView):
     template_name = 'users/profile.html'
     title = 'Магазин - Профиль'
 
-    def get_context_data(self, **kwargs):
-        context = super(UserProfileView, self).get_context_data(**kwargs)
-        context['baskets'] = Baskets.objects.filter(user=self.object)
-        return context
-
     def get_success_url(self):
         return reverse_lazy('users:profile', args=(self.object.id,))
 
