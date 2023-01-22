@@ -2,7 +2,6 @@ from django.urls import path
 
 from products import views
 
-
 app_name = 'products'
 
 urlpatterns = [
@@ -11,5 +10,4 @@ urlpatterns = [
     path('page/<int:page>', views.ProductListView.as_view(), name='paginator'),
     path('baskets/add/<int:product_id>/', views.basket_add, name='basket_add'),
     path('baskets/remove/<int:basket_id>/', views.basket_remove, name='basket_remove'),
-
 ]
