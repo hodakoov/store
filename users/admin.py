@@ -7,7 +7,7 @@ from .models import EmailVerification, User
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('username',)
+    list_display = ('username', 'email', )
     inlines = (BasketAdmin,)
 
 
