@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-$!3k#dpn(nwd)og0_riyl4a(va2%6uu3*2pe1x=0c^3+y5scl4
 DEBUG = True
 
 ALLOWED_HOSTS = []
-DOMAIN_NAME = 'http://localhost:8000'
+DOMAIN_NAME = 'http://127.0.0.1:8000'
 
 # Application definition
 
@@ -191,3 +191,8 @@ SOCIALACCOUNT_PROVIDERS = {
 
 CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
 CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'
+
+# Stripe
+
+STRIPE_PUBLIC_KEY = 'pk_test_51MXHr7I1hWrymBJIbfhPzjQqNzNyV9sF3yek0CQJYBaLMbvkxL7OvGekHNJhxsuIELbj9NROjVY0tvhoqzovjZNH00RPLnaQDa'
+STRIPE_SECRET_KEY = 'sk_test_51MXHr7I1hWrymBJIz22U5fXWtUbcdr9tgerFq320kibNtv8ZKHk0mSvZTcz0PbehFZXsC8zkyKcBH2cxGUmHcLW300LxATdAWF'
