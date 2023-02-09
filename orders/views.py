@@ -7,6 +7,8 @@ from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView
 from django.http import HttpResponseRedirect
 from django.conf import settings
+from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 
 from orders.forms import OrderForm
 from common.view import TitleMixin
@@ -33,6 +35,7 @@ class OrderCreateView(TitleMixin, CreateView):
                 },
             ],
             mode='payment',
+            metadata={'order_id': self.object.id},
             success_url='{}{}'.format(settings.DOMAIN_NAME,
                                       reverse('orders:success')),
             cancel_url='{}{}'.format(settings.DOMAIN_NAME,
@@ -56,3 +59,36 @@ class SuccessTemplateView(TitleMixin, TemplateView):
 
 class CanceledTemplateView(TemplateView):
     template_name = 'orders/canceled.html'
+
+
+@csrf_exempt
+def stripe_webhook_view(request):
+    payload = request.body
+    sig_header = request.META['HTTP_STRIPE_SIGNATURE']
+    event = None
+
+    try:
+        event = stripe.Webhook.construct_event(
+            payload, sig_header, settings.STRIPE_WEBHOOK_SECRET
+        )
+    except ValueError as e:
+        # Invalid payload
+        return HttpResponse(status=400)
+    except stripe.error.SignatureVerificationError as e:
+        # Invalid signature
+        return HttpResponse(status=400)
+
+    # Handle the checkout.session.completed event
+    if event['type'] == 'checkout.session.completed':
+        # Retrieve the session. If you require line items in the response, you may include them by expanding line_items.
+        session = event['data']['object']
+        # Fulfill the purchase...
+        fulfill_order(session)
+
+    # Passed signature verification
+    return HttpResponse(status=200)
+
+
+def fulfill_order(session):
+    # TODO: fill me in
+    print("Fulfilling order")

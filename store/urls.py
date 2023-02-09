@@ -18,15 +18,17 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
-from products import views
+from products.views import IndexView
+from orders.views import stripe_webhook_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.IndexView.as_view(), name='index'),
+    path('', IndexView.as_view(), name='index'),
     path('products/', include('products.urls', namespace='product')),
     path('users/', include('users.urls', namespace='users')),
     path('accounts/', include('allauth.urls')),
     path('orders/', include('orders.urls', namespace='orders')),
+    path('webhook/stripe/', stripe_webhook_view, name='webhook_stripe'),
 ]
 
 # для локальной разработки
