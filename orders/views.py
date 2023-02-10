@@ -12,6 +12,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from orders.forms import OrderForm
 from common.view import TitleMixin
+from products.models import Baskets
 
 
 class OrderCreateView(TitleMixin, CreateView):
@@ -27,13 +28,9 @@ class OrderCreateView(TitleMixin, CreateView):
     def post(self, request, *args, **kwargs):
         super(OrderCreateView, self).post(request, *args, **kwargs)
         stripe.api_key = settings.STRIPE_SECRET_KEY
+        baskets = Baskets.objects.filter(user=self.request.user)
         checkout_session = stripe.checkout.Session.create(
-            line_items=[
-                {
-                    'price': 'price_1MYTyMI1hWrymBJIG8HoXovF',
-                    'quantity': 1,
-                },
-            ],
+            line_items=baskets.stripe_products(),
             mode='payment',
             metadata={'order_id': self.object.id},
             success_url='{}{}'.format(settings.DOMAIN_NAME,
