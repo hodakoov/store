@@ -12,6 +12,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from orders.forms import OrderForm
 from common.view import TitleMixin
+from orders.models import Order
 from products.models import Baskets
 
 
@@ -87,5 +88,7 @@ def stripe_webhook_view(request):
 
 
 def fulfill_order(session):
-    # TODO: fill me in
-    print("Fulfilling order")
+    order_id = int(session.metadata.order_id)
+    order = Order.objects.get(id=order_id)
+    order.update_after_payment()
+
