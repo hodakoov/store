@@ -5,6 +5,7 @@ import stripe
 from django.urls import reverse_lazy, reverse
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView
+from django.views.generic.list import ListView
 from django.http import HttpResponseRedirect
 from django.conf import settings
 from django.http import HttpResponse
@@ -42,8 +43,15 @@ class OrderCreateView(TitleMixin, CreateView):
         return HttpResponseRedirect(checkout_session.url, status=HTTPStatus.SEE_OTHER)
 
 
-class OrdersView(TemplateView):
+class OrderListView(TitleMixin, ListView):
     template_name = 'orders/orders.html'
+    title = 'Store - Заказы'
+    queryset = Order.objects.all()
+    ordering = ('-created',)
+
+    def get_queryset(self):
+        queryset = super(OrderListView, self).get_queryset()
+        return queryset.filter(initiator=self.request.user)
 
 
 class OrderView(TemplateView):
@@ -91,4 +99,3 @@ def fulfill_order(session):
     order_id = int(session.metadata.order_id)
     order = Order.objects.get(id=order_id)
     order.update_after_payment()
-
