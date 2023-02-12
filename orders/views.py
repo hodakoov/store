@@ -6,6 +6,7 @@ from django.urls import reverse_lazy, reverse
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView
 from django.views.generic.list import ListView
+from django.views.generic.detail import DetailView
 from django.http import HttpResponseRedirect
 from django.conf import settings
 from django.http import HttpResponse
@@ -54,8 +55,14 @@ class OrderListView(TitleMixin, ListView):
         return queryset.filter(initiator=self.request.user)
 
 
-class OrderView(TemplateView):
+class OrderDetailView(DetailView):
     template_name = 'orders/order.html'
+    model = Order
+
+    def get_context_data(self, **kwargs):
+        context = super(OrderDetailView, self).get_context_data(**kwargs)
+        context['title'] = f'Store - Заказ #{self.object.id}'
+        return context
 
 
 class SuccessTemplateView(TitleMixin, TemplateView):
