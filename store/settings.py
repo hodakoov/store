@@ -14,28 +14,28 @@ import environ
 from pathlib import Path
 
 env = environ.Env(
-    DEBUG=(bool,),
-    SECRET_KEY=(str,),
-    DOMAIN_NAME=(str,),
+    DEBUG=(bool),
+    SECRET_KEY=(str),
+    DOMAIN_NAME=(str),
 
-    REDIS_HOST=(str,),
-    REDIS_PORT=(str,),
+    REDIS_HOST=(str),
+    REDIS_PORT=(str),
 
-    DATABASES_NAME=(str,),
-    DATABASES_USER=(str,),
-    DATABASES_PASSWORD=(str,),
-    DATABASES_HOST=(str,),
-    DATABASES_PORT=(str,),
+    DATABASES_NAME=(str),
+    DATABASES_USER=(str),
+    DATABASES_PASSWORD=(str),
+    DATABASES_HOST=(str),
+    DATABASES_PORT=(str),
 
-    EMAIL_HOST=(str,),
-    EMAIL_PORT=(str,),
-    EMAIL_HOST_USER=(str,),
-    EMAIL_HOST_PASSWORD=(str,),
-    EMAIL_USE_SSL=(bool,),
+    EMAIL_HOST=(str),
+    EMAIL_PORT=(str),
+    EMAIL_HOST_USER=(str),
+    EMAIL_HOST_PASSWORD=(str),
+    EMAIL_USE_SSL=(bool),
 
-    STRIPE_PUBLIC_KEY=(str,),
-    STRIPE_SECRET_KEY=(str,),
-    STRIPE_WEBHOOK_SECRET=(str,),
+    STRIPE_PUBLIC_KEY=(str),
+    STRIPE_SECRET_KEY=(str),
+    STRIPE_WEBHOOK_SECRET=(str),
 )
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
