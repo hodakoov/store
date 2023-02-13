@@ -9,23 +9,52 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
+import environ
 
 from pathlib import Path
 
+env = environ.Env(
+    DEBUG=(bool,),
+    SECRET_KEY=(str,),
+    DOMAIN_NAME=(str,),
+
+    REDIS_HOST=(str,),
+    REDIS_PORT=(str,),
+
+    DATABASES_NAME=(str,),
+    DATABASES_USER=(str,),
+    DATABASES_PASSWORD=(str,),
+    DATABASES_HOST=(str,),
+    DATABASES_PORT=(str,),
+
+    EMAIL_HOST=(str,),
+    EMAIL_PORT=(str,),
+    EMAIL_HOST_USER=(str,),
+    EMAIL_HOST_PASSWORD=(str,),
+    EMAIL_USE_SSL=(bool,),
+
+    STRIPE_PUBLIC_KEY=(str,),
+    STRIPE_SECRET_KEY=(str,),
+    STRIPE_WEBHOOK_SECRET=(str,),
+)
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Take environment variables from .env file
+environ.Env.read_env(BASE_DIR / '.env')
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-$!3k#dpn(nwd)og0_riyl4a(va2%6uu3*2pe1x=0c^3+y5scl4'
+SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = []
-DOMAIN_NAME = 'http://127.0.0.1:8000'
+DOMAIN_NAME = env('DOMAIN_NAME')
 
 # Application definition
 
@@ -87,10 +116,17 @@ INTERNAL_IPS = [
     'localhost',
 ]
 
+# Redis
+
+REDIS_HOST = env('REDIS_HOST')
+REDIS_PORT = env('REDIS_PORT')
+
+# Caches
+
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://127.0.0.1:6379/1',
+        'LOCATION': f'redis://{REDIS_HOST}:{REDIS_PORT}/1',
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         }
@@ -100,11 +136,11 @@ CACHES = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'store_db',
-        'USER': 'store_username',
-        'PASSWORD': 'store_password',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': env('DATABASES_NAME'),
+        'USER': env('DATABASES_USER'),
+        'PASSWORD': env('DATABASES_PASSWORD'),
+        'HOST': env('DATABASES_HOST'),
+        'PORT': env('DATABASES_PORT'),
     }
 }
 
@@ -156,19 +192,22 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Users
+
 AUTH_USER_MODEL = 'users.User'
 LOGIN_URL = '/users/login'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 # Email settings
-EMAIL_HOST = 'smtp.yandex.ru'
-EMAIL_PORT = '465'
-EMAIL_HOST_USER = 'wmvhcode@yandex.ru'
-EMAIL_HOST_PASSWORD = 'ujbixtudfdmqmzfr'
-EMAIL_USE_SSL = True
-#
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+else:
+    EMAIL_HOST = env('EMAIL_HOST')
+    EMAIL_PORT = env('EMAIL_PORT')
+    EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+    EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+    EMAIL_USE_SSL = env('EMAIL_USE_SSL')
 
 # Oauth
 
@@ -189,11 +228,11 @@ SOCIALACCOUNT_PROVIDERS = {
 
 # Celery
 
-CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
-CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'
+CELERY_BROKER_URL = f'redis://{REDIS_HOST}:{REDIS_PORT}'
+CELERY_RESULT_BACKEND = f'redis://{REDIS_HOST}:{REDIS_PORT}'
 
 # Stripe
 
-STRIPE_PUBLIC_KEY = 'pk_test_51MXHr7I1hWrymBJIbfhPzjQqNzNyV9sF3yek0CQJYBaLMbvkxL7OvGekHNJhxsuIELbj9NROjVY0tvhoqzovjZNH00RPLnaQDa'
-STRIPE_SECRET_KEY = 'sk_test_51MXHr7I1hWrymBJIz22U5fXWtUbcdr9tgerFq320kibNtv8ZKHk0mSvZTcz0PbehFZXsC8zkyKcBH2cxGUmHcLW300LxATdAWF'
-STRIPE_WEBHOOK_SECRET = 'whsec_8c19925bb10170f73667540676626d670f5587944a87628993181a09dca1ea4c'
+STRIPE_PUBLIC_KEY = env('STRIPE_PUBLIC_KEY')
+STRIPE_SECRET_KEY = env('STRIPE_SECRET_KEY')
+STRIPE_WEBHOOK_SECRET = env('STRIPE_WEBHOOK_SECRET')
