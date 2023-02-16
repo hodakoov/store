@@ -20,6 +20,7 @@ from django.urls import include, path
 
 from orders.views import stripe_webhook_view
 from products.views import IndexView
+from api.views import ProductListApiView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -29,6 +30,7 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),
     path('orders/', include('orders.urls', namespace='orders')),
     path('webhook/stripe/', stripe_webhook_view, name='webhook_stripe'),
+    path('product-list/', ProductListApiView.as_view(), name='product_list'),
 ]
 
 # для локальной разработки
